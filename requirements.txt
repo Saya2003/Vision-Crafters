@@ -1,0 +1,10 @@
+gradio>=4.44.0
+transformers>=4.46.0
+torch>=2.2.0
+torchvision>=0.17.0
+accelerate>=0.33.0
+pillow>=10.0.0
+numpy>=1.26.0
+safetensors>=0.4.0
+sentencepiece>=0.2.0
+python-dotenv>=1.0.0
