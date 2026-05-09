@@ -1,0 +1,11 @@
+[build]
+  # Since this is a Python project, Netlify will look for a requirements.txt file
+  # Note: Netlify is primarily for static sites and serverless functions.
+  command = "pip install -r requirements.txt"
+  
+  # The directory to publish. For a static site, this is usually "public" or "dist".
+  # For a Python web server, Netlify doesn't natively support long-running processes like Gradio.
+  publish = "."
+
+[build.environment]
+  PYTHON_VERSION = "3.10"
