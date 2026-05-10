@@ -1,46 +1,84 @@
-# AMD Multimodal Workbench
+---
+title: Vision Crafters Workbench
+emoji: 🐠
+colorFrom: indigo
+colorTo: gray
+sdk: gradio
+sdk_version: 6.14.0
+python_version: '3.13'
+app_file: app.py
+pinned: false
+license: mit
+short_description: A unified AMD-powered application for zero-shot industrial i
+---
 
-Single Gradio app combining three hackathon-aligned modes:
+# 🚀 AMD Multimodal Workbench
 
-1. **Industrial inspection** — CLIP zero-shot labels + calibrated explanation copy (swap in a ROCm fine-tuned detector when you own labels).
-2. **Medical workflow (educational)** — same CLIP stack as a **non-diagnostic** viewer/report workflow; use **public** chest X-ray data only.
-3. **Multimodal assistant** — BLIP caption + instruct Qwen text. Set `WB_ENABLE_VLM=1` on a CUDA/ROCm/MPS box to answer with **Qwen2-VL** directly from pixels.
+Welcome to the **Multimodal Workbench**, built by Team Vision-Crafters for the AMD Developer Hackathon. 
 
-Each run reports a **latency table** (transparent benchmarking for judges). Optional `WB_AUDIT_JSONL` writes JSONL traces for audit-style demos without running a database.
+This project is a versatile, unified AI application powered by AMD ROCm that merges three cutting-edge multimodal Vision-Language Model (VLM) workflows into a single, premium web interface. We bridge the gap between heavy AI inference and practical, real-world applications in manufacturing, healthcare education, and interactive analytical assistance.
 
-## Run locally
+## ✨ The Three Core Workflows
+
+### 1. Industrial Quality Control (Zero-Shot)
+- **Powered by:** CLIP (Contrastive Language-Image Pretraining)
+- **How it works:** Upload an image of a manufactured part and define custom defect labels on the fly (e.g., "chipped edge", "intact"). The model ranks the probability of those defects **zero-shot**—meaning it requires absolutely no retraining or massive custom datasets.
+- **Impact:** Scalable, instant visual quality assurance for factory floors.
+
+### 2. Educational Medical Imaging Workflow
+- **Powered by:** Qwen & BLIP
+- **How it works:** Designed strictly for demonstrative and learning purposes using public datasets (like chest X-rays). It synthesizes complex medical imagery into structured, multi-part workflow reports.
+- **Impact:** Demonstrates the future of AI as a supportive, educational tool in healthcare.
+
+### 3. Interactive Multimodal Assistant
+- **Powered by:** BLIP (Captioning) & Qwen2-VL (Reasoning)
+- **How it works:** Users can upload any frame and ask intricate, pixel-grounded questions. The system intelligently routes the query based on available hardware, engaging the full visual reasoning power of Qwen2-VL when GPU acceleration is enabled.
+- **Impact:** A dynamic conversational interface to query visual data instantly.
+
+---
+
+## 🛠️ Technology Stack & AMD Integration
+- **Frontend:** Gradio (with responsive, custom dark-mode glassmorphism)
+- **Framework:** PyTorch & Hugging Face Transformers
+- **Hardware Acceleration:** **AMD ROCm**
+- **Performance:** The entire pipeline is optimized to run on the **AMD Developer Cloud**, taking full advantage of accelerators like the MI300X. This ensures that heavy multimodal pipelines scale seamlessly and run highly efficiently on AMD infrastructure without requiring major code refactoring. 
+
+*(Note: Each run reports a transparent latency benchmarking table directly in the UI for performance auditing).*
+
+---
+
+## 💻 Run Locally
+
+To test this application on your local machine:
 
 ```bash
+# 1. Create and activate a virtual environment
 python -m venv .venv
 .venv\Scripts\activate
+
+# 2. Install dependencies
 pip install -r requirements.txt
+
+# 3. Launch the server
 python app.py
 ```
+*Open `http://127.0.0.1:7860` in your browser.*
 
-Open `http://127.0.0.1:7860`.
+---
 
-### Environment variables
+## ⚙️ Environment Variables
+
+Customize the underlying models and hardware routing without changing a line of code:
 
 | Variable | Purpose |
 | --- | --- |
-| `WB_CLIP_MODEL` | Hugging Face repo id for CLIP zero-shot (default `openai/clip-vit-base-patch32`). |
-| `WB_BLIP_MODEL` | HF id for captioning (default `Salesforce/blip-image-captioning-base`). |
-| `WB_QWEN_TEXT_MODEL` | Text instruct model id (default `Qwen/Qwen2.5-0.5B-Instruct`). Smaller = faster CPU laptops. |
-| `WB_FORCE_CPU` | Set `1`/`true` to disable GPU paths (CPU-only Spaces). |
-| `WB_ENABLE_VLM` | Set `1`/`true` on GPU hardware to route assistant answers through **Qwen2-VL** (`WB_VLM_MODEL`). |
-| `WB_VLM_MODEL` | HF id such as `Qwen/Qwen2-VL-2B-Instruct` (scale up if VRAM permits). |
-| `WB_AUDIT_JSONL` | Path like `data/audit.jsonl` to append UTC-stamped inference records. |
+| `WB_CLIP_MODEL` | Hugging Face repo id for CLIP zero-shot (default: `openai/clip-vit-base-patch32`). |
+| `WB_BLIP_MODEL` | HF id for captioning (default: `Salesforce/blip-image-captioning-base`). |
+| `WB_QWEN_TEXT_MODEL` | Text instruct model id (default: `Qwen/Qwen2.5-0.5B-Instruct`). |
+| `WB_FORCE_CPU` | Set `1` or `true` to disable GPU paths (Useful for CPU-only Spaces). |
+| `WB_ENABLE_VLM` | Set `1` or `true` on GPU hardware to route assistant answers through **Qwen2-VL**. |
+| `WB_VLM_MODEL` | HF id for Vision-Language model (default: `Qwen/Qwen2-VL-2B-Instruct`). |
+| `WB_AUDIT_JSONL` | Path to append UTC-stamped inference records (e.g., `data/audit.jsonl`). |
 
-Choosing HF models:
-
-1. Open [huggingface.co/models](https://huggingface.co/models) and filter by task (Zero-Shot Image Classification, Image-To-Text, etc.).
-2. Confirm license + size constraints (Spaces/L4 versus MI300X).
-3. Paste the canonical `organization/model` slug into `WB_*` vars and redeploy/restart — no code edits.
-
-## Hugging Face Space
-
-Set **SDK** to Gradio, entry file `app.py`, and ship `requirements.txt`. First boot downloads HF weights where configured (CLIP + BLIP + Qwen are multiple GB cumulative). For VL demos, provision a GPU Space or external runner and export `WB_ENABLE_VLM`.
-
-## AMD Developer Cloud
-
-Reuse the identical container; measure CLIP throughput (batch sizing) on ROCm MI300X, toggle `WB_ENABLE_VLM`, and cite latency tables exported from each tab inside your appendix.
+---
+*Built with ❤️ by Team Vision-Crafters.*
